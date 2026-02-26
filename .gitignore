@@ -40,6 +40,6 @@ build.txt
 
 
 ### Configs ###
-application.properties
-src/main/resources/application.properties
+application-local.properties
+src/main/resources/application-local.properties
 
