@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisador de Currículos IA</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar lateral estilo Dashboard RH -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">📄</span>
+                <h2>Recruit.AI</h2>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-target="analise-tab">
+                    📊 Análise Simples
+                </button>
+                <button class="nav-btn" data-target="match-tab">
+                    🎯 Match com Vaga
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Área Principal de Conteúdo -->
+        <main class="main-content">
+
+            <!-- Tab 1: Análise Simples de PDF -->
+            <section id="analise-tab" class="content-section active">
+                <header class="section-header">
+                    <h1>Nova Análise de Currículo</h1>
+                    <p>Faça upload de um PDF para extrair as principais habilidades e perfil do candidato.</p>
+                </header>
+
+                <div class="upload-card">
+                    <form id="uploadForm" class="upload-form">
+                        <div class="file-drop-area" id="dropArea">
+                            <div class="drop-icon">📂</div>
+                            <span class="drop-text">Arraste o currículo em PDF aqui ou clique para selecionar</span>
+                            <input type="file" id="pdfFile" accept="application/pdf" hidden required>
+                        </div>
+                        <div id="fileInfo" class="file-info hidden">
+                            <span id="fileName">Nenhum arquivo</span>
+                            <button type="button" id="removeFile">✖</button>
+                        </div>
+                        <button type="submit" class="submit-btn" id="submitBtn" disabled>🪄 Analisar Currículo</button>
+                    </form>
+                </div>
+
+                <!-- Skeleton Loader durante o processamento -->
+                <div id="loader" class="loader-container hidden">
+                    <div class="spinner"></div>
+                    <p>A IA está lendo o currículo...</p>
+                </div>
+
+                <!-- Painel de Resultados da Análise -->
+                <div id="resultPanel" class="result-panel hidden">
+                    <div class="result-header">
+                        <h2>Resultado da Extração</h2>
+                        <span class="badge badge-level" id="resLevel">Nível</span>
+                    </div>
+
+                    <div class="candidate-info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Nome</span>
+                            <span class="info-value" id="resName">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">E-mail</span>
+                            <span class="info-value" id="resEmail">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Telefone</span>
+                            <span class="info-value" id="resPhone">-</span>
+                        </div>
+                    </div>
+
+                    <div class="skills-section">
+                        <h3>Habilidades Identificadas</h3>
+                        <div class="skills-container" id="resSkills">
+                            <!-- Tags inseridas via JS -->
+                        </div>
+                    </div>
+
+                    <div class="summary-section">
+                        <h3>Resumo Profissional</h3>
+                        <p id="resSummary" class="summary-text">-</p>
+                    </div>
+
+                    <div class="links-section">
+                        <a href="#" id="resLinkedin" target="_blank" class="social-link hidden">LinkedIn</a>
+                        <a href="#" id="resGithub" target="_blank" class="social-link hidden">GitHub</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 2: Match com Vaga (Futuro) -->
+            <section id="match-tab" class="content-section">
+                <header class="section-header">
+                    <h1>Match de Candidato vs Vaga</h1>
+                    <p>Envie o currículo e compare com os requisitos da vaga em aberto.</p>
+                </header>
+                <div class="upload-card">
+                    <form id="matchForm" class="upload-form">
+                        <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                            <label for="vagaDescricao"
+                                style="display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem;">Descrição
+                                da Vaga:</label>
+                            <textarea id="vagaDescricao" rows="4"
+                                placeholder="Cole aqui os requisitos e a descrição completa da vaga em aberto..."
+                                required
+                                style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(15, 23, 42, 0.5); border: 1px dashed var(--border); color: var(--text-main); font-family: inherit; resize: vertical; box-sizing: border-box;"></textarea>
+                        </div>
+
+                        <div class="file-drop-area" id="matchDropArea">
+                            <div class="drop-icon">📂</div>
+                            <span class="drop-text">Arraste o currículo em PDF do candidato aqui</span>
+                            <input type="file" id="matchPdfFile" accept="application/pdf" hidden required>
+                        </div>
+                        <div id="matchFileInfo" class="file-info hidden">
+                            <span id="matchFileName">Nenhum arquivo</span>
+                            <button type="button" id="matchRemoveFile">✖</button>
+                        </div>
+                        <button type="submit" class="submit-btn" id="matchSubmitBtn" disabled>🎯 Calcular Match</button>
+                    </form>
+                </div>
+
+                <!-- Skeleton Loader durante o processamento -->
+                <div id="matchLoader" class="loader-container hidden">
+                    <div class="spinner"></div>
+                    <p>A IA está comparando o perfil com os requisitos da vaga...</p>
+                </div>
+
+                <!-- Painel de Resultados do Match -->
+                <div id="matchResultPanel" class="result-panel hidden">
+                    <div class="result-header">
+                        <h2>Resultado de Aderência</h2>
+                        <span class="badge" id="matchScoreBadge"
+                            style="font-size: 1.2rem; padding: 6px 16px; background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success);">0%
+                            Match</span>
+                    </div>
+
+                    <div class="summary-section">
+                        <h3>Análise Comparativa (Inteligência Artificial)</h3>
+                        <p id="matchJustificativa" class="summary-text"
+                            style="white-space: pre-wrap; line-height: 1.6;">-</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Toast de Notificações -->
+    <div id="toast" class="toast hidden">Mensagem</div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
